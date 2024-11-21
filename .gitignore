@@ -1,0 +1,9 @@
+# Ignorar arquivos temporários do Python
+*.pyc
+__pycache__/
+
+# Ignorar relatórios de depuração
+debug.log
+
+# Ignorar arquivo específico
+config.py

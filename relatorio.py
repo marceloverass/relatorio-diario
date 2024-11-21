@@ -78,12 +78,19 @@ conn.close()
 finalizadas_count = len(df1) if not df1.empty else 0
 pendentes_count = len(df2) if not df2.empty else 0
 
+if df1.empty:
+    finalizadas_texto = "Nenhuma ficha finalizada hoje."
+else:
+    finalizadas_texto = df1.to_string(index=False)
+
 # Processamento dos atrasos
 df2['ultimaMovimentacao'] = pd.to_datetime(df2['ultimaMovimentacao'])
 df2['dias_atraso'] = (datetime.now() - df2['ultimaMovimentacao']).dt.days
 
 # Filtrando e criando intervalos
 df2_atraso = df2[df2['dias_atraso'] > 5]
+
+df2_pendentes = df2[['CPF', 'PARTICIPANTE', 'TIPO']]
 
 # Gerar gráfico
 sns.set_theme(style="darkgrid")
@@ -140,11 +147,11 @@ corpo = f"""<html>
 
 Encaminho abaixo o relatório referente aos formulários processados no Portal do Patrocinador, para fins de ajustes e atualizações cadastrais, realizados em {data_atual}.</p>
 
-<p><strong>FINALIZADAS HOJE (TOTAL - {finalizadas_count}):</strong></p>
-<pre>{df1.to_string(index=False)}</pre>
+<p><strong>FINALIZADOS HOJE (TOTAL - {finalizadas_count}):</strong></p>
+<pre>{finalizadas_texto}</pre>
 
 <p><strong>PENDENTES (TOTAL - {pendentes_count}):</strong></p>
-<pre>{df2.to_string(index=False)}</pre>
+<pre>{df2_pendentes.to_string(index=False)}</pre>
 
 <p><strong>GRÁFICO DE FICHAS EM ATRASO</strong></p>
 <img src="cid:imagem_atraso" alt="Gráfico de Atraso">
